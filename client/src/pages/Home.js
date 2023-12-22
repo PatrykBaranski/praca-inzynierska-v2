@@ -6,7 +6,7 @@ function Home() {
   const [user, setUser] = useState("");
 
   const logoutUser = async () => {
-    await httpClient.post("//localhost:5000/logout");
+    await httpClient.post("//localhost:5555/logout");
     window.location.href = "/";
   };
 

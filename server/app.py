@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_session import Session
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from config import ApplicationConfig
 from models import db, User
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app,supports_credentials=True)
+app.config['CORS_HEADERS'] = 'Content-Type'
 bcrypt = Bcrypt(app)
 
 app.config.from_object(ApplicationConfig)
@@ -14,7 +15,9 @@ db.init_app(app)
 with app.app_context():
   db.create_all()
 
+
 @app.route("/register", methods=["POST"])
+@cross_origin()
 def register_user():
     #gets email and password input
     email = request.json["email"]
@@ -36,6 +39,7 @@ def register_user():
     })
 
 @app.route("/login", methods=["POST"])
+@cross_origin()
 def login_user():
     email = request.json["email"]
     password = request.json["password"]
@@ -55,11 +59,13 @@ def login_user():
     })
 
 @app.route("/logout", methods=["POST"])
+@cross_origin()
 def logout_user():
     session.pop("user_id")
     return "200"
 
 @app.route("/@me")
+@cross_origin()
 def get_current_user():
     user_id = session.get("user_id")
 
